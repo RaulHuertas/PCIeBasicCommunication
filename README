@@ -1,5 +1,5 @@
 PCIe Basic communication
 
 - Proyecto para lograr la comunicacion PCIe con una PC. 
-- Esta basado en el controlador para PCIe de XIlinx con la interfaz AXI
-- Se us al tarjeta SP605 como ejemplo.
+- Esta basado en el controlador para PCIe de Xilinx con la interfaz AXI
+- Se usa la tarjeta SP605 como ejemplo.
