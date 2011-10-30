@@ -1,0 +1,18 @@
+#
+## PlanAhead Generated physical constraints 
+#
+#NET pci_exp_perst_b      LOC = J7  | IOSTANDARD = LVCMOS25 | PULLUP | NODELAY;
+#NET  pci_exp_clk_p       LOC = B10;
+#NET  pci_exp_clk_n       LOC = A10;
+#
+#
+#INST PCIeTestCore_i/GT_i/tile0_gtpa1_dual_wrapper_i/gtpa1_dual_i LOC = GTPA1_DUAL_X0Y0;
+#NET   pci_exp_txp  LOC = B6;
+#NET   pci_exp_txn  LOC = A6;
+#NET   pci_exp_rxp  LOC = D7;
+#NET   pci_exp_rxn  LOC = C7;
+#
+#NET leds[0]            LOC = D17;
+#NET leds[1]             LOC = AB4;
+#NET leds[2]             LOC = D21;
+#NET leds[3]             LOC = W15;

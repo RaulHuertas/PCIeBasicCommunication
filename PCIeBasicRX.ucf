@@ -1,0 +1,28 @@
+
+
+#NET "pci_exp_perst_b" NODELAY = "TRUE";
+#NET "pci_exp_perst_b" IOSTANDARD = LVCMOS25;
+#NET "pci_exp_perst_b" PULLUP;
+#NET "pci_exp_perst_b" LOC = J7;
+#NET pci_exp_perst_b TIG;
+#NET  pci_exp_clk_p       LOC = A10;
+#NET  pci_exp_clk_n       LOC = B10;
+#
+#
+#INST pcieController/PCIeController/GT_i/tile0_gtpa1_dual_wrapper_i/gtpa1_dual_i LOC = GTPA1_DUAL_X0Y0;
+#NET "pci_exp_txp0" LOC = B6;
+#NET "pci_exp_txn0" LOC = A6;
+#NET "pci_exp_rxp0" LOC = D7;
+#NET "pci_exp_rxn0" LOC = C7;
+#
+#NET "leds[0]" LOC = D17;
+#NET "leds[1]" LOC = AB4;
+#NET "leds[2]" LOC = D21;
+#NET "leds[3]" LOC = W15;
+#NET button LOC = F3;
+#
+#NET clk125MHzInSP605Board PERIOD = 8ns;
+#
+#NET pcieController/PCIeController/gt_refclk_out(0) TNM_NET = GT_REFCLK_OUT;
+#TIMESPEC TS_GT_REFCLK_OUT = PERIOD "GT_REFCLK_OUT" 8 ns HIGH 50 %;
+#

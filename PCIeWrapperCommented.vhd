@@ -1,0 +1,309 @@
+--
+----Apuntes
+---- - Frecuencia del reloj de entrada: 125MHz, obtenida de un PLL en la tarjeta del SP605, su entrada
+----   es la señal de 100MHz de la motherboard y al FPGA presenta una señal de
+----   125MHZ limpia y filtrada.
+--
+--
+--
+--
+--library IEEE;
+--use IEEE.STD_LOGIC_1164.ALL;
+--
+---- Uncomment the following library declaration if using
+---- arithmetic functions with Signed or Unsigned values
+----use IEEE.NUMERIC_STD.ALL;
+--
+---- Uncomment the following library declaration if instantiating
+---- any Xilinx primitives in this code.
+----library UNISIM;
+----use UNISIM.VComponents.all;
+--
+--entity MyPCIeWrapper is
+--port(	data_in:	in std_logic_vector(3 downto 0);
+--        clk:		in std_logic;
+--        data_out:	out std_logic_vector(3 downto 0)
+--);
+--end MyPCIeWrapper;
+--
+--architecture Behavioral of MyPCIeWrapper is
+--component PCIeCoreTester is
+--  generic (
+--    TL_TX_RAM_RADDR_LATENCY           : integer    := 0;
+--    TL_TX_RAM_RDATA_LATENCY           : integer    := 2;
+--    TL_RX_RAM_RADDR_LATENCY           : integer    := 0;
+--    TL_RX_RAM_RDATA_LATENCY           : integer    := 2;
+--    TL_RX_RAM_WRITE_LATENCY           : integer    := 0;
+--    VC0_TX_LASTPACKET                 : integer    := 14;
+--    VC0_RX_RAM_LIMIT                  : bit_vector := x"7FF";
+--    VC0_TOTAL_CREDITS_PH              : integer    := 32;
+--    VC0_TOTAL_CREDITS_PD              : integer    := 211;
+--    VC0_TOTAL_CREDITS_NPH             : integer    := 8;
+--    VC0_TOTAL_CREDITS_CH              : integer    := 40;
+--    VC0_TOTAL_CREDITS_CD              : integer    := 211;
+--    VC0_CPL_INFINITE                  : boolean    := TRUE;
+--    BAR0                              : bit_vector := x"FFFFFF84";
+--    BAR1                              : bit_vector := x"FFFFFFFF";
+--    BAR2                              : bit_vector := x"00000000";
+--    BAR3                              : bit_vector := x"00000000";
+--    BAR4                              : bit_vector := x"00000000";
+--    BAR5                              : bit_vector := x"00000000";
+--    EXPANSION_ROM                     : bit_vector := "0000000000000000000000";
+--    DISABLE_BAR_FILTERING             : boolean    := FALSE;
+--    DISABLE_ID_CHECK                  : boolean    := FALSE;
+--    TL_TFC_DISABLE                    : boolean    := FALSE;
+--    TL_TX_CHECKS_DISABLE              : boolean    := FALSE;
+--    USR_CFG                           : boolean    := FALSE;
+--    USR_EXT_CFG                       : boolean    := FALSE;
+--    DEV_CAP_MAX_PAYLOAD_SUPPORTED     : integer    := 2;
+--    CLASS_CODE                        : bit_vector := x"050000";
+--    CARDBUS_CIS_POINTER               : bit_vector := x"00000000";
+--    PCIE_CAP_CAPABILITY_VERSION       : bit_vector := x"1";
+--    PCIE_CAP_DEVICE_PORT_TYPE         : bit_vector := x"0";
+--    PCIE_CAP_SLOT_IMPLEMENTED         : boolean    := FALSE;
+--    PCIE_CAP_INT_MSG_NUM              : bit_vector := "00000";
+--    DEV_CAP_PHANTOM_FUNCTIONS_SUPPORT : integer    := 0;
+--    DEV_CAP_EXT_TAG_SUPPORTED         : boolean    := FALSE;
+--    DEV_CAP_ENDPOINT_L0S_LATENCY      : integer    := 7;
+--    DEV_CAP_ENDPOINT_L1_LATENCY       : integer    := 7;
+--    SLOT_CAP_ATT_BUTTON_PRESENT       : boolean    := FALSE;
+--    SLOT_CAP_ATT_INDICATOR_PRESENT    : boolean    := FALSE;
+--    SLOT_CAP_POWER_INDICATOR_PRESENT  : boolean    := FALSE;
+--    DEV_CAP_ROLE_BASED_ERROR          : boolean    := TRUE;
+--    LINK_CAP_ASPM_SUPPORT             : integer    := 1;
+--    LINK_CAP_L0S_EXIT_LATENCY         : integer    := 7;
+--    LINK_CAP_L1_EXIT_LATENCY          : integer    := 7;
+--    LL_ACK_TIMEOUT                    : bit_vector := x"00B7";
+--    LL_ACK_TIMEOUT_EN                 : boolean    := FALSE;
+--    LL_REPLAY_TIMEOUT                 : bit_vector := x"00FF";
+--    LL_REPLAY_TIMEOUT_EN              : boolean    := TRUE;
+--    MSI_CAP_MULTIMSGCAP               : integer    := 0;
+--    MSI_CAP_MULTIMSG_EXTENSION        : integer    := 0;
+--    LINK_STATUS_SLOT_CLOCK_CONFIG     : boolean    := FALSE;
+--    PLM_AUTO_CONFIG                   : boolean    := FALSE;
+--    FAST_TRAIN                        : boolean    := FALSE;
+--    ENABLE_RX_TD_ECRC_TRIM            : boolean    := TRUE;
+--    DISABLE_SCRAMBLING                : boolean    := FALSE;
+--    PM_CAP_VERSION                    : integer    := 3;
+--    PM_CAP_PME_CLOCK                  : boolean    := FALSE;
+--    PM_CAP_DSI                        : boolean    := FALSE;
+--    PM_CAP_AUXCURRENT                 : integer    := 0;
+--    PM_CAP_D1SUPPORT                  : boolean    := FALSE;
+--    PM_CAP_D2SUPPORT                  : boolean    := FALSE;
+--    PM_CAP_PMESUPPORT                 : bit_vector := x"0F";
+--    PM_DATA0                          : bit_vector := x"00";
+--    PM_DATA_SCALE0                    : bit_vector := x"0";
+--    PM_DATA1                          : bit_vector := x"00";
+--    PM_DATA_SCALE1                    : bit_vector := x"0";
+--    PM_DATA2                          : bit_vector := x"00";
+--    PM_DATA_SCALE2                    : bit_vector := x"0";
+--    PM_DATA3                          : bit_vector := x"00";
+--    PM_DATA_SCALE3                    : bit_vector := x"0";
+--    PM_DATA4                          : bit_vector := x"00";
+--    PM_DATA_SCALE4                    : bit_vector := x"0";
+--    PM_DATA5                          : bit_vector := x"00";
+--    PM_DATA_SCALE5                    : bit_vector := x"0";
+--    PM_DATA6                          : bit_vector := x"00";
+--    PM_DATA_SCALE6                    : bit_vector := x"0";
+--    PM_DATA7                          : bit_vector := x"00";
+--    PM_DATA_SCALE7                    : bit_vector := x"0";
+--    PCIE_GENERIC                      : bit_vector := "000001101111";
+--    GTP_SEL                           : integer    := 0;
+--    CFG_VEN_ID                        : std_logic_vector(15 downto 0) := x"10EE";
+--    CFG_DEV_ID                        : std_logic_vector(15 downto 0) := x"0007";
+--    CFG_REV_ID                        : std_logic_vector(7 downto 0)  := x"00";
+--    CFG_SUBSYS_VEN_ID                 : std_logic_vector(15 downto 0) := x"10EE";
+--    CFG_SUBSYS_ID                     : std_logic_vector(15 downto 0) := x"0007";
+--    REF_CLK_FREQ                      : integer    := 1
+--  );
+--  port (
+--    -- PCI Express Fabric Interface
+--    pci_exp_txp             : out std_logic;--Interfaz externa
+--    pci_exp_txn             : out std_logic;--Interfaz externa
+--    pci_exp_rxp             : in  std_logic;--inerfaz externa
+--    pci_exp_rxn             : in  std_logic;--Interfaz externa
+--
+--    user_lnk_up             : out std_logic;--Inica que se ha detectado un switch o root complex 
+--
+--    -- Tx
+--    s_axis_tx_tdata         : in  std_logic_vector(31 downto 0);--Datos en la interfaz de transmision
+--    s_axis_tx_tlast         : in  std_logic;--La app usa esta senal para indica que la DWORD actual es al ultiam del paquete
+--    s_axis_tx_tvalid        : in  std_logic;--Le indica al core que se queire transmitir un paquete
+--    s_axis_tx_tready        : out std_logic;--El core indica que esta listo para recibir datos
+--    s_axis_tx_tkeep         : in  std_logic_vector(3 downto 0);--El core no usa esta senal, igualarlo a '1'
+--    s_axis_tx_tuser         : in  std_logic_vector(3 downto 0);--[3]=>Cancela paquetes, [2]=>Indica que se envie el actual paquete defrente a la interfaz física, el resto inicializarlo  a 0
+--    tx_err_drop             : out std_logic;--Indica que el paquete que se enviaba actualmente en modo 'cut-trough'(s_axis_tx_tuser[2]) se ha descartado
+--    tx_buf_av               : out std_logic_vector(5 downto 0);--Indicia el numero de bufferes de transmision disponibles
+--    tx_cfg_req              : out std_logic;--Indica que el core va aenviar una TLP que el mismo ah generado
+--    tx_cfg_gnt              : in  std_logic;--La applicacion le da permiso al core para transmitir sus propais  TLPs. Ponerlo a '1' para priorizarlos ocn respecto a
+--                                            --los TLPs de la aplicacion
+--
+--    -- Rx
+--    m_axis_rx_tdata         : out std_logic_vector(31 downto 0);--Los datos que se van a recibir
+--    m_axis_rx_tlast         : out std_logic;--El core indica que el dato actual es el ultimo del paquete
+--    m_axis_rx_tvalid        : out std_logic;--El core indica que hay datos que deben ser leidos en la interfaz
+--    m_axis_rx_tkeep         : out std_logic_vector(3 downto 0);--Ignorar esta senal
+--    m_axis_rx_tready        : in  std_logic;--La app le idnica al core que peude recibir datos
+--    m_axis_rx_tuser         : out std_logic_vector(21 downto 0);--El paquete actual esta 'poisoned'
+--    rx_np_ok                : in  std_logic;--La app le indica al core que esta listo para recibir peticiones 'non-posted'
+--
+--    fc_sel                  : in  std_logic_vector(2 downto 0);         
+--    fc_nph                  : out std_logic_vector(7 downto 0);
+--    fc_npd                  : out std_logic_vector(11 downto 0);            --FUNCIONES PARA EL CONTROL DE FLUJO,
+--    fc_ph                   : out std_logic_vector(7 downto 0);             --NO SE VAN A USAR EN ESTA APLICACION
+--    fc_pd                   : out std_logic_vector(11 downto 0);            --fc_sel:=0, el resto ignorarlos
+--    fc_cplh                 : out std_logic_vector(7 downto 0);
+--    fc_cpld                 : out std_logic_vector(11 downto 0);
+--
+--    -- Host (CFG) Interface
+--    cfg_do                  : out std_logic_vector(31 downto 0);--El valor del registro de configuracion que se quiere leer
+--    cfg_rd_wr_done          : out std_logic;--Indica que los valores presentes en cfg_do son validos y son lo que se quizo leer.                     
+--    cfg_dwaddr              : in  std_logic_vector(9 downto 0);--Direccion del registro de configuacion a leer
+--    cfg_rd_en               : in  std_logic;--Inciaia la lectura del registro de configuracion, active-low, solo debe activarse pro un ciclo de reloj
+--    --Interfaz de errores
+--    cfg_err_ur              : in  std_logic;--La app indica que ha recibido una peticion no soportada
+--    cfg_err_cor             : in  std_logic;--Reporta que un error corregible ha sido detectado
+--    cfg_err_ecrc            : in  std_logic;--error ECRC detectado
+--    cfg_err_cpl_timeout     : in  std_logic;--No se ha recibido respuesta de una peticion
+--    cfg_err_cpl_abort       : in  std_logic;--A cpl was aborted
+--    cfg_err_posted          : in  std_logic;--Indica que la transaccion que genero el error actual fue una 'posted'
+--    cfg_err_locked          : in  std_logic;--Indica que la transaccion que gnero el error actual fuee una 'locked'
+--    cfg_err_tlp_cpl_header  : in  std_logic_vector(47 downto 0);--Cabecera del error a reportar
+--    cfg_err_cpl_rdy         : out std_logic;--Listo para recibir senales de error
+--    
+--    cfg_interrupt           : in  std_logic;--La aplicacion indica que se deseea enviar una interrupcion
+--    cfg_interrupt_rdy       : out std_logic;--Junto con cfg_interrupt indica que se ha transmitido al interrupcion requerida
+--    cfg_interrupt_assert    : in  std_logic;--Tipo de mensjae: 1->assert, 0->Deassert
+--    cfg_interrupt_do        : out std_logic_vector(7 downto 0);--ignorar
+--    cfg_interrupt_di        : in  std_logic_vector(7 downto 0);--Interrupcion a envir: 00h->INTa, 01h->INTB, 02h->INTC, 03h->INTD
+--    cfg_interrupt_mmenable  : out std_logic_vector(2 downto 0);--Numero de vectores de MSI... ignorar
+--    cfg_interrupt_msienable : out std_logic;--Si esta en '1' puede enviar señales interrupciones MSI, sino solo las del tipo 'legacy'
+--    cfg_turnoff_ok          : in  std_logic;--La app indicia que es seguro apagar la energia
+--    cfg_to_turnoff          : out std_logic;--Esta esperando a poder apagar la energia
+--    cfg_pm_wake             : in  std_logic;--wake up signal
+--    cfg_pcie_link_state     : out std_logic_vector(2 downto 0);--estado de enlace L0 L1 L0s
+--    cfg_trn_pending         : in  std_logic;--Timeout a una 'completion' upstream
+--    cfg_dsn                 : in  std_logic_vector(63 downto 0);--Numero serial de la App
+--    --Registos mapeados directamente, ignorar
+--    cfg_bus_number          : out std_logic_vector(7 downto 0);--numero del bus PCI
+--    cfg_device_number       : out std_logic_vector(4 downto 0);--numero de dispositivo en el bus PCI
+--    cfg_function_number     : out std_logic_vector(2 downto 0);--Numero de funcion
+--    cfg_status              : out std_logic_vector(15 downto 0);--Estado
+--    cfg_command             : out std_logic_vector(15 downto 0);
+--    cfg_dstatus             : out std_logic_vector(15 downto 0);
+--    cfg_dcommand            : out std_logic_vector(15 downto 0);
+--    cfg_lstatus             : out std_logic_vector(15 downto 0);
+--    cfg_lcommand            : out std_logic_vector(15 downto 0);
+--
+--    -- System Interface
+--    sys_clk                 : in  std_logic;--Enrada que en la atrjeta Sp605 debe ser de 125 MHZ del PLL U48
+--    sys_reset               : in  std_logic;--Reset del conector PCI
+--    user_clk_out            : out std_logic;--Senal de PCI, a 62.5MHz
+--    user_reset_out          : out std_logic;--Reinciio de la interfaz PCI
+--    received_hot_reset      : out std_logic--Hot reset recibido
+--  );
+--  end component PCIeCoreTester;
+--begin
+--
+---- YourInstanceName : PCIeCoreTester  generic map
+----  (
+----    FAST_TRAIN                        => FAST_TRAIN
+----  )
+----  port map (
+----    -- PCI Express (PCI_EXP) Fabric Interface
+----    pci_exp_txp                         => pci_exp_txp,
+----    pci_exp_txn                         => pci_exp_txn,
+----    pci_exp_rxp                         => pci_exp_rxp,
+----    pci_exp_rxn                         => pci_exp_rxn,
+----
+----    -- Transaction (TRN) Interface
+----    -- Common clock & reset
+----    user_lnk_up                         => user_lnk_up,
+----    user_clk_out                        => user_clk,
+----    user_reset_out                      => user_reset,
+----    -- Common flow control
+----    fc_sel                              => fc_sel,
+----    fc_nph                              => fc_nph,
+----    fc_npd                              => fc_npd,
+----    fc_ph                               => fc_ph,
+----    fc_pd                               => fc_pd,
+----    fc_cplh                             => fc_cplh,
+----    fc_cpld                             => fc_cpld,
+----    -- Transaction Tx
+----    s_axis_tx_tready                    => s_axis_tx_tready,
+----    s_axis_tx_tdata                     => s_axis_tx_tdata,
+----    s_axis_tx_tkeep                     => s_axis_tx_tkeep,
+----    s_axis_tx_tuser                     => s_axis_tx_tuser,
+----    s_axis_tx_tlast                     => s_axis_tx_tlast,
+----    s_axis_tx_tvalid                    => s_axis_tx_tvalid,
+----    tx_err_drop                         => tx_err_drop,
+----    tx_buf_av                           => tx_buf_av,
+----    tx_cfg_req                          => tx_cfg_req,
+----    tx_cfg_gnt                          => tx_cfg_gnt,
+----    -- Transaction Rx
+----    m_axis_rx_tdata                     => m_axis_rx_tdata,
+----    m_axis_rx_tkeep                     => m_axis_rx_tkeep,
+----    m_axis_rx_tlast                     => m_axis_rx_tlast,
+----    m_axis_rx_tvalid                    => m_axis_rx_tvalid,
+----    m_axis_rx_tready                    => m_axis_rx_tready,
+----    m_axis_rx_tuser                     => m_axis_rx_tuser,
+----    rx_np_ok                            => rx_np_ok,
+----
+----    -- Configuration (CFG) Interface
+----    -- Configuration space access
+----    cfg_do                             => cfg_do,
+----    cfg_rd_wr_done                     => cfg_rd_wr_done,
+----    cfg_dwaddr                         => cfg_dwaddr,
+----    cfg_rd_en                          => cfg_rd_en,
+----    -- Error reporting
+----    cfg_err_ur                         => cfg_err_ur,
+----    cfg_err_cor                        => cfg_err_cor,
+----    cfg_err_ecrc                       => cfg_err_ecrc,
+----    cfg_err_cpl_timeout                => cfg_err_cpl_timeout,
+----    cfg_err_cpl_abort                  => cfg_err_cpl_abort,
+----    cfg_err_posted                     => cfg_err_posted,
+----    cfg_err_locked                     => cfg_err_locked,
+----    cfg_err_tlp_cpl_header             => cfg_err_tlp_cpl_header,
+----    cfg_err_cpl_rdy                    => cfg_err_cpl_rdy,
+----    -- Interrupt generation
+----    cfg_interrupt                      => cfg_interrupt,
+----    cfg_interrupt_rdy                  => cfg_interrupt_rdy,
+----    cfg_interrupt_assert               => cfg_interrupt_assert,
+----    cfg_interrupt_do                   => cfg_interrupt_do,
+----    cfg_interrupt_di                   => cfg_interrupt_di,
+----    cfg_interrupt_mmenable             => cfg_interrupt_mmenable,
+----    cfg_interrupt_msienable            => cfg_interrupt_msienable,
+----    -- Power management signaling
+----    cfg_turnoff_ok                     => cfg_turnoff_ok,
+----    cfg_to_turnoff                     => cfg_to_turnoff,
+----    cfg_pm_wake                        => cfg_pm_wake,
+----    cfg_pcie_link_state                => cfg_pcie_link_state,
+----    cfg_trn_pending                    => cfg_trn_pending,
+----    -- System configuration and status
+----    cfg_dsn                            => cfg_dsn,
+----    cfg_bus_number                     => cfg_bus_number,
+----    cfg_device_number                  => cfg_device_number,
+----    cfg_function_number                => cfg_function_number,
+----    cfg_status                         => cfg_status,
+----    cfg_command                        => cfg_command,
+----    cfg_dstatus                        => cfg_dstatus,
+----    cfg_dcommand                       => cfg_dcommand,
+----    cfg_lstatus                        => cfg_lstatus,
+----    cfg_lcommand                       => cfg_lcommand,
+----
+----    -- System (SYS) Interface
+----    sys_clk                            => sys_clk_c,
+----    sys_reset                          => sys_reset,
+----    received_hot_reset                 => OPEN
+----  );
+----  
+--
+--
+--process(clk)
+--begin
+--    if ( rising_edge(clk) ) then
+--        data_out <= data_in;  
+--    end if;
+--end process;
+--
+--end Behavioral;
