@@ -9,20 +9,20 @@ entity TXEngine is
             --INTERFAZ PCIe
             clk: in std_logic;
             reset : in std_logic;
-            s_axis_tx_last : out std_logic;
-            s_axis_tx_data : out std_logic_vector(31 downto 0);
-            s_axis_tx_tvalid : out std_logic;
+            s_axis_tx_last : out std_logic:='0';
+            s_axis_tx_data : out std_logic_vector(31 downto 0):=(others=> '0');
+            s_axis_tx_tvalid : out std_logic:='0';
             s_axis_tx_tready : in std_logic;
-            tx_src_dsc : out std_logic;
+            tx_src_dsc : out std_logic:='0';
             tx_buf_av : in std_logic;
             tx_terr_drop : in std_logic;
-            tx_str : out std_logic;
+            tx_str : out std_logic:='0';
             tx_cfg_req : in std_logic;
             tx_cfg_gnt : out std_logic;
-            terr_fwd : out std_logic;
+            terr_fwd : out std_logic:='0';
             --Senales que indican cuando y que transmitir
             read_request: in std_logic;
-            read_request_done: out std_logic; 
+            read_request_done: out std_logic:='0'; 
             RQST_HEADER_DW0 : in std_logic_vector(31 downto 0);
             RQST_HEADER_DW1 : in std_logic_vector(31 downto 0);
             RQST_HEADER_ADDR_FIRST : in std_logic_vector(31 downto 0);
@@ -32,7 +32,6 @@ entity TXEngine is
             ResponseID : in std_logic_vector(15 downto 0);
             --senales de depuracion
             estadoActual_dbg : out std_logic_vector(2 downto 0)
-            
     );
 
 
@@ -50,10 +49,12 @@ architecture Behavioral of TXEngine is
 
     signal estado : TransmisorState := WAITING;
     signal nextState, previousState :  TransmisorState; 
-    
+    signal read_request_done_signal: std_logic := '0';
     signal DW0, DW1, DW2, DATA:  std_logic_vector(31 downto 0); 
     
 begin
+
+read_request_done <= read_request_done_signal ;
 
 DW0 <= "0"&PCIeCplFMT_WITHD&PCIeType_CplD&"0"&RQST_HEADER_DW0(22 downto 20)&"0000"&"0"&"0"&RQST_HEADER_DW0(13 downto 12)&"00"&RQST_HEADER_DW0(9 downto 0);
 DW1 <= ResponseID&"000"&"0"&"000000000100";
@@ -89,7 +90,7 @@ clocking : if (rising_edge(clk)) then
             previousState <= estado;
             s_axis_tx_last <= '0';
             s_axis_tx_tvalid <= '0';
-            read_request_done <= '0';
+            read_request_done_signal <= '0';
         else 
              previousState <= estado;
              case estado is
@@ -98,7 +99,9 @@ clocking : if (rising_edge(clk)) then
                             estado <= SENDING_DW0;
                             s_axis_tx_data <= DW0;
                             s_axis_tx_tvalid <= '1';
-                            read_request_done  <= '0';
+                        end if;
+                        if(read_request_done_signal  = '1') then
+                                read_request_done_signal <= '0';
                         end if;
                     when SENDING_DW0    => -- Enviando la primera palabra  de la cabecera de respuesta
                         if( s_axis_tx_tready = '1' ) then 
@@ -121,7 +124,7 @@ clocking : if (rising_edge(clk)) then
                             estado <= WAITING;
                             s_axis_tx_last <= '0';
                             s_axis_tx_tvalid <= '0';
-                            read_request_done  <= '1';
+                            read_request_done_signal  <= '1';
                         end if;
              end case;--case(estado)
         end if;--reset
