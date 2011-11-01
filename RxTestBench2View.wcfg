@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/rhuertas/FPGAProjects/PCIeTest/RXEngineTestBench1_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="pcie_constants" />
+            <top_module name="rxenginetestbench1" />
+            <top_module name="std_logic_1164" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="18" />
+   <wvobject fp_name="/rxenginetestbench1/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/m_axis_rx_tlast" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">m_axis_rx_tlast</obj_property>
+      <obj_property name="ObjectShortName">m_axis_rx_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/m_axis_rx_tdata" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">m_axis_rx_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_rx_tdata[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/rerr_fw" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rerr_fw</obj_property>
+      <obj_property name="ObjectShortName">rerr_fw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/m_axis_rx_tvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">m_axis_rx_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_rx_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/bar_hit" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">bar_hit[6:0]</obj_property>
+      <obj_property name="ObjectShortName">bar_hit[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/read_request_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">read_request_done</obj_property>
+      <obj_property name="ObjectShortName">read_request_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/estadoactual_dbg" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">estadoactual_dbg[2:0]</obj_property>
+      <obj_property name="ObjectShortName">estadoactual_dbg[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/m_axis_rx_tready" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">m_axis_rx_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_rx_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/rx_np_ok" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_np_ok</obj_property>
+      <obj_property name="ObjectShortName">rx_np_ok</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/read_request" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">read_request</obj_property>
+      <obj_property name="ObjectShortName">read_request</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/dw0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dw0[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dw0[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/dw1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dw1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dw1[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/addr_first" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">addr_first[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_first[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/addr_second" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">addr_second[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_second[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/rxenginetestbench1/clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+</wave_config>

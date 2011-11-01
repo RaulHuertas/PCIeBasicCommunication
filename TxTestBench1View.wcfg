@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/rhuertas/FPGAProjects/PCIeTest/TxEngineTestBench1_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="pcie_constants" />
+            <top_module name="std_logic_1164" />
+            <top_module name="txenginetestbench1" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="23" />
+   <wvobject fp_name="/txenginetestbench1/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/s_axis_tx_tready" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_axis_tx_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_tx_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_buf_av" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_buf_av</obj_property>
+      <obj_property name="ObjectShortName">tx_buf_av</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_terr_drop" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_terr_drop</obj_property>
+      <obj_property name="ObjectShortName">tx_terr_drop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_cfg_req" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_cfg_req</obj_property>
+      <obj_property name="ObjectShortName">tx_cfg_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/read_request" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">read_request</obj_property>
+      <obj_property name="ObjectShortName">read_request</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/rqst_header_dw0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rqst_header_dw0[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rqst_header_dw0[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/rqst_header_dw1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rqst_header_dw1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rqst_header_dw1[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/rqst_header_addr_first" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rqst_header_addr_first[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rqst_header_addr_first[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/rqst_header_addr_second" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rqst_header_addr_second[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rqst_header_addr_second[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/data_to_respond" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">data_to_respond[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_to_respond[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/responseid" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">responseid[15:0]</obj_property>
+      <obj_property name="ObjectShortName">responseid[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/s_axis_tx_last" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_axis_tx_last</obj_property>
+      <obj_property name="ObjectShortName">s_axis_tx_last</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/s_axis_tx_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">s_axis_tx_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_tx_data[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/s_axis_tx_tvalid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">s_axis_tx_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_tx_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_src_dsc" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_src_dsc</obj_property>
+      <obj_property name="ObjectShortName">tx_src_dsc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_str" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_str</obj_property>
+      <obj_property name="ObjectShortName">tx_str</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/tx_cfg_gnt" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_cfg_gnt</obj_property>
+      <obj_property name="ObjectShortName">tx_cfg_gnt</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/terr_fwd" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">terr_fwd</obj_property>
+      <obj_property name="ObjectShortName">terr_fwd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/read_request_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">read_request_done</obj_property>
+      <obj_property name="ObjectShortName">read_request_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/estadoactual_dbg" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">estadoactual_dbg[2:0]</obj_property>
+      <obj_property name="ObjectShortName">estadoactual_dbg[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/txenginetestbench1/clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+</wave_config>
