@@ -1,36 +1,7 @@
---------------------------------------------------------------------------------
--- Company: 
--- Engineer:
---
--- Create Date:   01:44:06 10/30/2011
--- Design Name:   
--- Module Name:   /home/rhuertas/FPGAProjects/PCIeTest/RXEngineTestBench1.vhd
--- Project Name:  PCIeTest
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
--- VHDL Test Bench Created by ISE for module: RXEngine
--- 
--- Dependencies:
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
--- Notes: 
--- This testbench has been automatically generated using types std_logic and
--- std_logic_vector for the ports of the unit under test.  Xilinx recommends
--- that these types always be used for the top-level I/O of a design in order
--- to guarantee that the testbench will bind correctly to the post-implementation 
--- simulation model.
---------------------------------------------------------------------------------
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---USE ieee.numeric_std.ALL;
+ use work.pcie_constants.ALL;
  
 ENTITY RXEngineTestBench1 IS
 END RXEngineTestBench1;
@@ -39,7 +10,7 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT RXEngine
+    COMPONENT RXEngineSynthetized
     PORT(
          clk : IN  std_logic;
          reset : IN  std_logic;
@@ -91,7 +62,7 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: RXEngine PORT MAP (
+   uut: RXEngineSynthetized PORT MAP (
           clk => clk,
           reset => reset,
           m_axis_rx_tlast => m_axis_rx_tlast,
@@ -182,8 +153,26 @@ BEGIN
      wait for clk_period ;
      m_axis_rx_tlast <= '0';
      m_axis_rx_tvalid <= '0';
+     wait for clk_period*4;
 
-
+     --Se recibe un paquete de lectura
+     m_axis_rx_tvalid <= '1';
+     m_axis_rx_tdata <= "0"&PCIeFMT_4DW&PCIeType_MRd&"0"&"000"&"0000"&"0"&"0"&"00"&"00"&"0000000001";--DW0
+     wait for clk_period ;
+     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"1111"&"1111";--DW1
+     wait for clk_period ;
+     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000";--ADDR_FIRST
+     wait for clk_period ;
+     m_axis_rx_tlast <= '1';
+     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000";--ADDR_SECOND
+     wait for clk_period ;
+     m_axis_rx_tvalid <= '0';
+     m_axis_rx_tlast <= '0';
+     wait for 10*clk_period ;--En este tiempo se envia larespeusta por el modulo de transmision
+     read_request_done <= '1';
+     wait for clk_period ;
+     read_request_done <= '0';
+     
 
       wait;
    end process;

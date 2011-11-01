@@ -1,34 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    18:38:50 10/23/2011 
--- Design Name: 
--- Module Name:    RXEngine - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use work.pcie_constants.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity RXEngine is
 port(
@@ -99,8 +72,8 @@ process (estado) begin
         when READING_ADDR_FIRST                                               => estadoActual_dbg<= "010";
         when READING_ADDR_SECOND                                          => estadoActual_dbg<= "011";
         when READING_DATA                                                             => estadoActual_dbg<= "100";
-        when WAITING_RESPONSE_COMPLETION                          => estadoActual_dbg<= "100";
-        when IGNORING_PACKAGE                                                     => estadoActual_dbg<= "101";
+        when WAITING_RESPONSE_COMPLETION                          => estadoActual_dbg<= "101";
+        when IGNORING_PACKAGE                                                     => estadoActual_dbg<= "110";
     end case;    
 end process;
 
@@ -117,12 +90,12 @@ ADDR_SECOND_VALUE <= ADDR_SECOND_SIGNAL;
 DATA_VALUE <= DATA_SIGNAL;
 
 Packet_Fmt <= DW0_VALUE( 30 downto 29 );
-Packet_IS_4_WORD_ADDR_Q <= DW0_VALUE( 29 );
+Packet_IS_4_WORD_ADDR_Q <= Packet_Fmt( 1 );
 Packet_HAVE_DATA_Q <= DW0_VALUE( 30 );
 Packet_Type <= DW0_VALUE( 28 downto 24 );
 Packet_Length <= DW0_VALUE( 9 downto 0 );
 
-stateChange: process(clk, estado, nextState,m_axis_rx_tlast, m_axis_rx_tvalid , rerr_fw) begin
+stateChange: process(clk, estado, nextState,m_axis_rx_tlast, m_axis_rx_tvalid , rerr_fw, read_request_done) begin
         if( rising_edge(clk)) then
            
 
@@ -206,11 +179,6 @@ stateChange: process(clk, estado, nextState,m_axis_rx_tlast, m_axis_rx_tvalid , 
                
                  
         end if;
-        
-        
-        
-        
-        
         
 end process;
 

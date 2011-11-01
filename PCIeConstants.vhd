@@ -35,6 +35,8 @@ package pcie_constants is
         constant  PCIeFMT_4DW : std_logic_vector(1 downto 0) := "01";
         constant  PCIeFMT_3DWD: std_logic_vector(1 downto 0) := "10";
         constant  PCIeFMT_4DWD : std_logic_vector(1 downto 0) := "11";
+        constant  PCIeCplFMT_NOD : std_logic_vector(1 downto 0) := "00";
+        constant  PCIeCplFMT_WITHD : std_logic_vector(1 downto 0) := "10";
         --Tipos
         constant  PCIeType_MRd : std_logic_vector(4 downto 0) := "00000";
         constant  PCIeType_MWr : std_logic_vector(4 downto 0) := "00000";
