@@ -12,7 +12,7 @@ port(
 	m_axis_rx_tdata: in std_logic_vector(31 downto 0);
 	rerr_fw : in std_logic;--Marca el paquete actual como invalido
 	m_axis_rx_tvalid : in std_logic;
-	m_axis_rx_tready: out std_logic;
+	m_axis_rx_ready: out std_logic;
 	rx_np_ok : out std_logic;
 	bar_hit : in std_logic_vector(6 downto 0);
     --Para la comunicacion con el modulo de transmision
@@ -25,7 +25,9 @@ port(
     ADDR_SECOND : out std_logic_vector(31 downto 0);
     DATA: out std_logic_vector(31 downto 0);
     --senales de depuracion
-    estadoActual_dbg : out std_logic_vector(2 downto 0)
+    estadoActual_dbg : out std_logic_vector(2 downto 0);
+    rxDataBeat_dbg: out std_logic;
+    rxData_dbg: out std_logic_vector(31 downto 0)
 );
 end RXEngine;
 
@@ -62,9 +64,12 @@ signal Packet_IS_4_WORD_ADDR_Q: std_logic;
 signal Packet_HAVE_DATA_Q: std_logic;
 signal Packet_Type: std_logic_vector(4 downto 0);
 signal Packet_Length: std_logic_vector(9 downto 0);
+signal m_axis_rx_tready: std_logic;
 
 begin
 
+--GENERAMOS LAS SENALES DE DEPURACION
+--Senales del estado actual de la maquina de estados
 process (estado) begin
     case estado is
         when READING_DW_0                                                           => estadoActual_dbg<= "000";
@@ -76,6 +81,13 @@ process (estado) begin
         when IGNORING_PACKAGE                                                     => estadoActual_dbg<= "110";
     end case;    
 end process;
+--Senales para capturar el paquete recibido
+m_axis_rx_ready <= m_axis_rx_tready;
+rxDataBeat_dbg <=  (m_axis_rx_tready and m_axis_rx_tvalid);
+rxData_dbg <= m_axis_rx_tdata;
+
+
+rx_np_ok <= '1';
 
 DW0 <= DW0_VALUE;
 DW1 <= DW1_VALUE;
@@ -83,7 +95,7 @@ ADDR_FIRST <= ADDR_FIRST_VALUE;
 ADDR_SECOND <= ADDR_SECOND_VALUE;
 DATA <= DATA_VALUE;
 
- DW0_VALUE <= DW0_SIGNAL;
+DW0_VALUE <= DW0_SIGNAL;
 DW1_VALUE <= DW1_SIGNAL;
 ADDR_FIRST_VALUE <= ADDR_FIRST_SIGNAL;
 ADDR_SECOND_VALUE <= ADDR_SECOND_SIGNAL;
@@ -95,7 +107,20 @@ Packet_HAVE_DATA_Q <= DW0_VALUE( 30 );
 Packet_Type <= DW0_VALUE( 28 downto 24 );
 Packet_Length <= DW0_VALUE( 9 downto 0 );
 
-stateChange: process(clk, estado, nextState,m_axis_rx_tlast, m_axis_rx_tvalid , rerr_fw, read_request_done) begin
+stateChange: process(
+            clk, estado, 
+            nextState,
+            reset,
+            bar_hit,
+            m_axis_rx_tlast, 
+            m_axis_rx_tvalid , 
+            rerr_fw, 
+            read_request_done,
+            m_axis_rx_tdata,
+            Packet_HAVE_DATA_Q,
+            Packet_Type
+) begin
+
         if( rising_edge(clk)) then
            
 
@@ -168,7 +193,6 @@ stateChange: process(clk, estado, nextState,m_axis_rx_tlast, m_axis_rx_tvalid , 
                                     if( (m_axis_rx_tlast = '1') and (m_axis_rx_tvalid='1')) then
                                         estado <= READING_DW_0;
                                     end if;
-                                    
                                     
                             end case;
                     end if;--barhit

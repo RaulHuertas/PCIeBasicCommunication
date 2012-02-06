@@ -10,7 +10,7 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT RXEngineSynthetized
+    COMPONENT RXEngine
     PORT(
          clk : IN  std_logic;
          reset : IN  std_logic;
@@ -18,7 +18,7 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
          m_axis_rx_tdata : IN  std_logic_vector(31 downto 0);
          rerr_fw : IN  std_logic;
          m_axis_rx_tvalid : IN  std_logic;
-         m_axis_rx_tready : OUT  std_logic;
+         m_axis_rx_ready : OUT  std_logic;
          rx_np_ok : OUT  std_logic;
          bar_hit : IN  std_logic_vector(6 downto 0);
          read_request : OUT  std_logic;
@@ -28,10 +28,8 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
          ADDR_FIRST : OUT  std_logic_vector(31 downto 0);
          ADDR_SECOND : OUT  std_logic_vector(31 downto 0);
          DATA : OUT  std_logic_vector(31 downto 0);
-         
          estadoActual_dbg : out std_logic_vector(2 downto 0)
-         
-        );
+     );
     END COMPONENT;
     
 
@@ -62,14 +60,14 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: RXEngineSynthetized PORT MAP (
+   uut: RXEngine PORT MAP (
           clk => clk,
           reset => reset,
           m_axis_rx_tlast => m_axis_rx_tlast,
           m_axis_rx_tdata => m_axis_rx_tdata,
           rerr_fw => rerr_fw,
           m_axis_rx_tvalid => m_axis_rx_tvalid,
-          m_axis_rx_tready => m_axis_rx_tready,
+          m_axis_rx_ready => m_axis_rx_tready,
           rx_np_ok => rx_np_ok,
           bar_hit => bar_hit,
           read_request => read_request,
@@ -120,7 +118,7 @@ BEGIN
      m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0100";--ADDR_SECOND
      wait for clk_period ;
      m_axis_rx_tlast <= '1';
-     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0111";--DATA
+     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0001";--DATA
      wait for clk_period ;
      m_axis_rx_tlast <= '0';
      m_axis_rx_tvalid <= '0';
@@ -149,7 +147,7 @@ BEGIN
      wait for clk_period ;
      
      m_axis_rx_tlast <= '1';
-     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0111";--DATA
+     m_axis_rx_tdata <= "0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0000"&"0010";--DATA
      wait for clk_period ;
      m_axis_rx_tlast <= '0';
      m_axis_rx_tvalid <= '0';

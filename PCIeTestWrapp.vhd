@@ -26,6 +26,7 @@ port(
 	src_dsc : in std_logic;
 	tx_terr_drop: out std_logic;
 	str : in std_logic;
+    tx_buf_av :  out std_logic_vector(5 downto 0);
 	tx_cfg_req: out std_logic;
 	tx_cfg_gnt: in std_logic;
 	terr_fwd: in std_logic;
@@ -58,8 +59,7 @@ end PCIeTestWrapp;
   
 architecture Behavioral of PCIeTestWrapp is
 component PCIeTestCore 
-
-generic (
+ generic (
     TL_TX_RAM_RADDR_LATENCY           : integer    := 0;
     TL_TX_RAM_RDATA_LATENCY           : integer    := 2;
     TL_RX_RAM_RADDR_LATENCY           : integer    := 0;
@@ -147,7 +147,6 @@ generic (
     CFG_SUBSYS_ID                     : std_logic_vector(15 downto 0) := x"0007";
     REF_CLK_FREQ                      : integer    := 1
 );
-  
 port (
     -- PCI Express Fabric Interface
     pci_exp_txp             : out std_logic;
@@ -270,7 +269,7 @@ begin
     s_axis_tx_tlast                     => s_axis_tx_tlast,
     s_axis_tx_tvalid                    => s_axis_tx_tvalid,
     tx_err_drop                         => tx_terr_drop,
-    tx_buf_av                           => open,
+    tx_buf_av                           => tx_buf_av,
     tx_cfg_req                          => open,
     tx_cfg_gnt                          => '1',
     -- Transaction Rx
