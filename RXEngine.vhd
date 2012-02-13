@@ -26,6 +26,7 @@ port(
     DATA: out std_logic_vector(31 downto 0);
     --senales de depuracion
     estadoActual_dbg : out std_logic_vector(2 downto 0);
+    potEstadoActual_dbg : out std_logic_vector(2 downto 0);
     rxDataBeat_dbg: out std_logic;
     rxData_dbg: out std_logic_vector(31 downto 0)
 );
@@ -43,7 +44,7 @@ architecture Behavioral of RXEngine is
     IGNORING_PACKAGE
   );
 
-signal estado : ReceptionState := READING_DW_0;
+signal state : ReceptionState := READING_DW_0;
 signal nextState, previousState :  ReceptionState;
 
 signal DW0_VALUE : std_logic_vector(31 downto 0) := (others => '0');
@@ -60,18 +61,21 @@ signal DATA_SIGNAL : std_logic_vector(31 downto 0) := (others => '0');
 
 
 signal Packet_Fmt : std_logic_vector(1 downto 0);
-signal Packet_IS_4_WORD_ADDR_Q: std_logic;
+signal Packet_IS_64_WORD_ADDR_Q: std_logic;
 signal Packet_HAVE_DATA_Q: std_logic;
 signal Packet_Type: std_logic_vector(4 downto 0);
 signal Packet_Length: std_logic_vector(9 downto 0);
-signal m_axis_rx_tready: std_logic;
+
+signal m_axis_rx_tready : std_logic;
+
+signal dataStrobe: std_logic;
 
 begin
 
 --GENERAMOS LAS SENALES DE DEPURACION
 --Senales del estado actual de la maquina de estados
-process (estado) begin
-    case estado is
+process (state) begin
+    case state is
         when READING_DW_0                                                           => estadoActual_dbg<= "000";
         when READING_DW_1                                                           => estadoActual_dbg<= "001";
         when READING_ADDR_FIRST                                               => estadoActual_dbg<= "010";
@@ -81,11 +85,27 @@ process (estado) begin
         when IGNORING_PACKAGE                                                     => estadoActual_dbg<= "110";
     end case;    
 end process;
+
+
+process (nextState) begin
+    case nextState is
+        when READING_DW_0                                                           => potEstadoActual_dbg<= "000";
+        when READING_DW_1                                                           => potEstadoActual_dbg<= "001";
+        when READING_ADDR_FIRST                                               => potEstadoActual_dbg<= "010";
+        when READING_ADDR_SECOND                                          => potEstadoActual_dbg<= "011";
+        when READING_DATA                                                             => potEstadoActual_dbg<= "100";
+        when WAITING_RESPONSE_COMPLETION                          => potEstadoActual_dbg<= "101";
+        when IGNORING_PACKAGE                                                     => potEstadoActual_dbg<= "110";
+    end case;    
+end process;
+
+
 --Senales para capturar el paquete recibido
 m_axis_rx_ready <= m_axis_rx_tready;
-rxDataBeat_dbg <=  (m_axis_rx_tready and m_axis_rx_tvalid);
+m_axis_rx_tready <= '1';
+dataStrobe <= (m_axis_rx_tready and m_axis_rx_tvalid and bar_hit(0)  );
+rxDataBeat_dbg <=  dataStrobe;
 rxData_dbg <= m_axis_rx_tdata;
-
 
 rx_np_ok <= '1';
 
@@ -102,115 +122,147 @@ ADDR_SECOND_VALUE <= ADDR_SECOND_SIGNAL;
 DATA_VALUE <= DATA_SIGNAL;
 
 Packet_Fmt <= DW0_VALUE( 30 downto 29 );
-Packet_IS_4_WORD_ADDR_Q <= Packet_Fmt( 1 );
+Packet_IS_64_WORD_ADDR_Q <= Packet_Fmt( 1 );
 Packet_HAVE_DATA_Q <= DW0_VALUE( 30 );
 Packet_Type <= DW0_VALUE( 28 downto 24 );
 Packet_Length <= DW0_VALUE( 9 downto 0 );
 
-stateChange: process(
-            clk, estado, 
-            nextState,
-            reset,
-            bar_hit,
-            m_axis_rx_tlast, 
-            m_axis_rx_tvalid , 
-            rerr_fw, 
-            read_request_done,
-            m_axis_rx_tdata,
-            Packet_HAVE_DATA_Q,
-            Packet_Type
+stateTransition: process (reset, clk, nextState) begin
+    if( rising_edge(clk) ) then
+        if(reset = '1') then
+            state <= READING_DW_0;
+        else
+            state <= nextState;
+        end if;
+    end if;
+end process stateTransition;
+
+stateMachineDefinition: process(
+        state,
+        bar_hit,
+        m_axis_rx_tlast, 
+        m_axis_rx_tvalid , 
+        rerr_fw, 
+        read_request_done,
+        Packet_IS_64_WORD_ADDR_Q,
+        Packet_HAVE_DATA_Q, 
+        Packet_Type,
+        dataStrobe
 ) begin
-
-        if( rising_edge(clk)) then
-           
-
-            if (reset = '1') then
-                    estado <= READING_DW_0;
-                    previousState <= READING_DW_0;
-                    m_axis_rx_tready <= '1';
-                    read_request <= '0';
-            else -- Evolucion de la maquina de estados
-                previousState <= estado;
-                
-                if( bar_hit(0) = '1' ) then
-                         case estado is
-                       
-                                 when  READING_DW_0 => -- Se esta esperando al primera palabra
-                                         if(m_axis_rx_tvalid='1') then
-                                            if( rerr_fw  = '1' ) then
-                                                estado <= IGNORING_PACKAGE;
-                                            else 
-                                                estado <= READING_DW_1;
-                                                DW0_SIGNAL <= m_axis_rx_tdata;
-                                            end if;
-                                        end if;
-                                       
-                                       
-                                when READING_DW_1 =>
-                                    if(m_axis_rx_tvalid='1') then
-                                        DW1_SIGNAL <= m_axis_rx_tdata;
-                                        estado <= READING_ADDR_FIRST;
-                                    end if;
-                                        
-                                        
-                                when READING_ADDR_FIRST =>
-                                        if(m_axis_rx_tvalid='1') then
-                                                ADDR_FIRST_SIGNAL <= m_axis_rx_tdata;
-                                                if( Packet_IS_4_WORD_ADDR_Q= '1' ) then --direccion de 64 bits
-                                                        estado <= READING_ADDR_SECOND;
+    
+            case state is
+                when READING_DW_0 =>
+                    if(    (dataStrobe='1')    ) then
+                            nextState <= READING_DW_1;
+                    else
+                            nextState <= READING_DW_0;
+                    end if;
+                when READING_DW_1 =>
+                    if(   (dataStrobe='1')     ) then
+                             if( rerr_fw  = '1' ) then
+                                nextState<= IGNORING_PACKAGE;
+                            else 
+                                nextState <= READING_ADDR_FIRST;
+                            end if;
+                     else
+                            nextState <= READING_DW_1;
+                    end if;
+                when READING_ADDR_FIRST =>
+                    if (    (dataStrobe='1')    )  then
+                    
+                                    if(  Packet_IS_64_WORD_ADDR_Q = '0' ) then
+                                    
+                                                if( Packet_HAVE_DATA_Q = '1' ) then
+                                                    nextState <= READING_DATA;
                                                 else
-                                                        estado <= READING_DATA;
+                                                    if (   Packet_Type = PCIeType_MRd ) then
+                                                        nextState <= WAITING_RESPONSE_COMPLETION;
+                                                    else
+                                                        nextState <= READING_DW_0;--Esperar el siguiente paquete
+                                                    end if;
                                                 end if;
-                                            
-                                        end if;
-                                
-                                
-                                when READING_ADDR_SECOND =>
-                                    if(m_axis_rx_tvalid='1') then
-                                        ADDR_SECOND_SIGNAL <= m_axis_rx_tdata;
-                                        estado <= READING_DATA;
+                                                
+                                    else
+                                                nextState <= READING_ADDR_SECOND;
                                     end if;
-                                    
-                                    
-                                when READING_DATA =>
-                                    if(m_axis_rx_tvalid='1') then
-                                        DATA_SIGNAL <= m_axis_rx_tdata;
-                                        if( (Packet_HAVE_DATA_Q = '0') and (Packet_Type = PCIeType_MRd)  ) then
-                                                read_request <= '1';
-                                                estado <= WAITING_RESPONSE_COMPLETION;-- se reinicia la maquina de estado
-                                        else
-                                                estado <= READING_DW_0;-- se reinicia la maquina de estado
-                                        end if;
-                                    end if;
-                                    
-                                when WAITING_RESPONSE_COMPLETION =>
-                                    if( read_request_done = '1' ) then
-                                        estado <= READING_DW_0;
-                                        read_request<= '0';
-                                    end if;
-                                    
-                                when IGNORING_PACKAGE =>
-                                    if( (m_axis_rx_tlast = '1') and (m_axis_rx_tvalid='1')) then
-                                        estado <= READING_DW_0;
-                                    end if;
-                                    
-                            end case;
-                    end if;--barhit
-                    
-                    
-            end if;
-                
-               
-                 
+                    else
+                            nextState <= READING_ADDR_FIRST;                
+                    end if;
+                when READING_ADDR_SECOND =>
+                    if(     dataStrobe='1'   ) then
+                        if( Packet_HAVE_DATA_Q = '1' ) then
+                            nextState <= READING_DATA;
+                        else
+                            if (   Packet_Type = PCIeType_MRd ) then
+                                nextState <= WAITING_RESPONSE_COMPLETION;
+                            else
+                                nextState <= READING_DW_0;--Esperar el siguiente paquete
+                            end if;
+                        end if;
+                    else
+                        nextState <= READING_ADDR_SECOND;--Esperar el siguiente paquete
+                    end if;
+                when READING_DATA =>
+                    if(     dataStrobe='1'   ) then
+                       nextState <= READING_DW_0;--Esperar el siguiente paquete
+                    else
+                        nextState <= READING_DATA;--Esperar el siguiente paquete
+                    end if;
+                 when WAITING_RESPONSE_COMPLETION =>
+                    if( read_request_done = '1'  ) then
+                        nextState <= READING_DW_0;
+                    else
+                        nextState <= WAITING_RESPONSE_COMPLETION;
+                    end if;  
+                 when IGNORING_PACKAGE =>
+                    if(    (dataStrobe='1') and (m_axis_rx_tlast = '1')) then
+                        nextState <= READING_DW_0;
+                    else
+                        nextState <= IGNORING_PACKAGE;
+                    end if;  
+            end case;
+end process stateMachineDefinition;
+
+
+
+
+
+updatingRegisters: process(
+        state, 
+        clk, 
+        dataStrobe, 
+        m_axis_rx_tdata,
+        Packet_Type
+  ) begin
+
+    if( rising_edge(clk) ) then
+    
+        if (    (state=READING_DW_0) and (dataStrobe='1')  ) then
+                DW0_SIGNAL <= m_axis_rx_tdata;
+         end if;
+        if (    (state=READING_DW_1) and (dataStrobe='1')  ) then
+                DW1_SIGNAL <= m_axis_rx_tdata;
+         end if;
+        if (    (state=READING_ADDR_FIRST) and (dataStrobe='1')  ) then
+                ADDR_FIRST_SIGNAL <= m_axis_rx_tdata;
+        end if;
+        if (    (state=READING_ADDR_SECOND) and (dataStrobe='1')  ) then
+                ADDR_SECOND_SIGNAL <= m_axis_rx_tdata;
+        end if;
+        if (    (state=READING_DATA) and (dataStrobe='1')  ) then
+                DATA_SIGNAL <= m_axis_rx_tdata;
+        end if;
+        if(     (state=READING_ADDR_FIRST) and (Packet_Type = PCIeType_MRd)  ) then
+                read_request <= '1';
+        else
+                read_request <= '0';
         end if;
         
-end process;
+        
+    end if;
 
---process () begin
---
---    
---    
---end process;
+end process updatingRegisters;
+
 
 end Behavioral;
 

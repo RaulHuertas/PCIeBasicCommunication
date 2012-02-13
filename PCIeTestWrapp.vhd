@@ -264,7 +264,6 @@ begin
     s_axis_tx_tready                    => s_axis_tx_tready,
     s_axis_tx_tdata                     => s_axis_tx_tdata,
     s_axis_tx_tkeep                     => "1111",
-    
     s_axis_tx_tuser                     => pcie_s_axis_tx_tuser,
     s_axis_tx_tlast                     => s_axis_tx_tlast,
     s_axis_tx_tvalid                    => s_axis_tx_tvalid,
@@ -280,7 +279,6 @@ begin
     m_axis_rx_tready                    => m_axis_rx_tready,
     m_axis_rx_tuser                     => pcie_m_axis_rx_tuser,
     rx_np_ok                            => rx_np_ok,
-
     -- Configuration (CFG) Interface
     -- Configuration space access
     cfg_do                             => cfg_do,

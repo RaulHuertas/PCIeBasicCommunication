@@ -28,10 +28,15 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
          ADDR_FIRST : OUT  std_logic_vector(31 downto 0);
          ADDR_SECOND : OUT  std_logic_vector(31 downto 0);
          DATA : OUT  std_logic_vector(31 downto 0);
-         estadoActual_dbg : out std_logic_vector(2 downto 0)
+         estadoActual_dbg : out std_logic_vector(2 downto 0);
+         potEstadoActual_dbg : out std_logic_vector(2 downto 0);
+         rxDataBeat_dbg: out std_logic;
+         rxData_dbg: out std_logic_vector(31 downto 0)
      );
     END COMPONENT;
-    
+ 
+ 
+ 
 
    --Inputs
    signal clk : std_logic := '0';
@@ -43,7 +48,10 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
    signal bar_hit : std_logic_vector(6 downto 0) := (others => '0');
    signal read_request_done : std_logic := '0';
    signal estadoActual_dbg : std_logic_vector(2 downto 0) ;
-
+    signal rxDataBeat_dbg: std_logic;
+    signal rxData_dbg: std_logic_vector(31 downto 0);
+    signal potEstadoActual_dbg :  std_logic_vector(2 downto 0);
+    
  	--Outputs
    signal m_axis_rx_tready : std_logic;
    signal rx_np_ok : std_logic;
@@ -56,6 +64,10 @@ ARCHITECTURE behavior OF RXEngineTestBench1 IS
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
+ 
+ 
+ 
+ 
  
 BEGIN
  
@@ -77,7 +89,10 @@ BEGIN
           ADDR_FIRST => ADDR_FIRST,
           ADDR_SECOND => ADDR_SECOND,
           DATA => DATA,
-          estadoActual_dbg => estadoActual_dbg
+          estadoActual_dbg => estadoActual_dbg,
+          potEstadoActual_dbg => potEstadoActual_dbg,
+          rxDataBeat_dbg => rxDataBeat_dbg,
+           rxData_dbg=>rxData_dbg
         );
 
    -- Clock process definitions
@@ -95,6 +110,7 @@ BEGIN
    begin		
       -- hold reset state for 100 ns.
           wait for clk_period*10;
+          
 
       -- insert stimulus here 
       --Reinicio del sistema
